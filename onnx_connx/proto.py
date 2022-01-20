@@ -740,8 +740,8 @@ class ConnxNodeProto(ConnxObject):
         out.write('\n')
 
     def compile(self, out, type_='normal'):
-        if type_ == 'debug':
-            out.write(self.proto.name)
+        if type_ == 'debug' and self.proto.name != '_ref':
+            out.write(self.proto.name.replace('/', '_'))
             out.write('|')
 
         out.write(self.proto.op_type)
