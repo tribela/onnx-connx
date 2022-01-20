@@ -79,11 +79,11 @@ class ConnxModelProto(ConnxObject):
 
         self.graph.dump(depth + 1)
 
-    def compile(self, path):
+    def compile(self, path, type_='normal'):
         os.makedirs(path, exist_ok=True)
 
         # Write graph
-        self.graph.compile(path)
+        self.graph.compile(path, type_)
 
         with open(os.path.join(path, 'model.connx'), 'w') as out:
             # Write connx version
@@ -335,7 +335,7 @@ class ConnxGraphProto(ConnxObject):
 
         return ConnxNodeProto(proto, self)
 
-    def compile(self, path):
+    def compile(self, path, type_='normal'):
         def write(tensor, array, out):
             out.write(struct.pack('=I', tensor.proto.data_type))  # dtype
             out.write(struct.pack('=I', len(tensor.proto.dims)))  # ndim
@@ -399,7 +399,7 @@ class ConnxGraphProto(ConnxObject):
             out.write('\n')
 
             for node in self.node:
-                node.compile(out)
+                node.compile(out, type_)
 
 
 class ConnxTensorProto(ConnxObject):
@@ -739,7 +739,11 @@ class ConnxNodeProto(ConnxObject):
             attribute.dump(depth + 2)
         out.write('\n')
 
-    def compile(self, out):
+    def compile(self, out, type_='normal'):
+        if type_ == 'debug':
+            out.write(self.proto.name)
+            out.write('|')
+
         out.write(self.proto.op_type)
         out.write(' ')
 

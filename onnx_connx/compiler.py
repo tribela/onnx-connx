@@ -35,6 +35,8 @@ def compile(*_args: str) -> int:
     parser.add_argument('-d', action='store_true', help='dump human readable onnx metadata to standard output')
     parser.add_argument('-o', metavar='output directory', type=str, default='out', nargs='?',
                         help='output directory(default is out)')
+    parser.add_argument('-t', '--type', choices=['normal', 'debug'], default='normal',
+                        help='compile type(default is normal)')
     # parser.add_argument('-p', metavar='profile', type=str, nargs='?', help='specify configuration file')
     # parser.add_argument('-c', metavar='comment', type=str, nargs='?', choices=['true', 'false', 'True', 'False'],
     #                     help='output comments(true or false)')
@@ -52,7 +54,7 @@ def compile(*_args: str) -> int:
             if args.d:
                 model.dump()
             else:
-                model.compile(args.o)
+                model.compile(args.o, args.type)
         elif path.endswith('.pb'):
             tensor = load_tensor(path)
 
